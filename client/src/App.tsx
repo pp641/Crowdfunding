@@ -9,6 +9,7 @@ import ProjectList from './Components/ProjectList';
 import ProfilePage from './Components/Profilepage';
 import Navbar from './Components/Navbar';
 import Footer from './Components/Footer'
+import Chatbox from './Components/ChatBox';
 
 
 const App: React.FC = () => {
@@ -16,6 +17,7 @@ const App: React.FC = () => {
     <Router>
       <Navbar/>
       <Routes>
+        <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegistrationForm />} />
         <Route path="/project/:project_id" element={<ProjectDetail />} />
@@ -23,6 +25,7 @@ const App: React.FC = () => {
         <Route path="/project-creation" element={<ProjectCreationPage/>}/>
         <Route path="/projects" element={<ProjectList/>}/>
         <Route path="/profile" element={<ProfilePage/>}/>
+        <Route path = "/message" element= {<Chatbox />} />
       </Routes>
       <Footer/>
     </Router>
