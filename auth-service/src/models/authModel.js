@@ -45,13 +45,14 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.pre('save', function (next) {
-  this.updatedAt = Date.now();
-  next();
-});
-
-userSchema.save().catch(err => {
-    console.error('Validation errors:', err.errors);
-});
+userSchema.pre('save', async function (next) {
+    try {
+      this.updatedAt = Date.now();
+      next();
+    } catch (error) {
+        console.error("Error", error);
+        next(error);
+    }
+  });
 
 module.exports = mongoose.model('User', userSchema);
