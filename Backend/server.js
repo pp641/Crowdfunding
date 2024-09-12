@@ -1,0 +1,11 @@
+const express = require('express');
+const app = express();
+app.use(express.json());
+const authRoutes = require('./src/routes/authRoutes');
+const projectRoutes = require('./src/routes/projectRoutes');
+const connectDB = require('./src/config/db');
+const PORT = process.env.PORT || 5001;
+connectDB();
+app.use(authRoutes);
+app.use(projectRoutes);
+app.listen(PORT, () => console.log(`Auth Service running on port ${PORT}`));
