@@ -1,9 +1,9 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/authModel");
-const crypto = require('crypto');
+const {Kafka}  = require('kafkajs')
 const sendEmail = require('../services/mailer');
-const redisClient = require('../config/redisClient');
 const { generateToken } = require("../services/jwtService");
+const  runProducer  = require("../kafka/producer").runProducer;
 
 exports.register = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
@@ -35,15 +35,16 @@ exports.login = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordValid) {
       return res.status(400).json({ message: "Invalid password" });
     }
 
     const token = generateToken(user);
-    res.json({ token });
+    await runProducer(token);
+    res.json({token});
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.inspect });
   }
 };
 

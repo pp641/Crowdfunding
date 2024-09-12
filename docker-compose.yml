@@ -1,0 +1,26 @@
+services:
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+  auth-service:
+    build:
+      context: ./auth-service  
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: development
+      MONGO_URI: mongodb://mongo:27017/authdb
+      JWT_SECRET: pp_is_here
+      EMAIL_USER: prajjwalpandey649@gmail.com
+      EMAIL_PASSWORD: zwii wfdw wcjv vxbz
+      REDIS_HOST: redis
+    ports:
+      - "5001:5001"
+    depends_on:
+      - redis
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"

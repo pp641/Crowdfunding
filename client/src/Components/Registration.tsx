@@ -24,6 +24,11 @@ const RegistrationForm: React.FC = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleSendOTP = () => {
+    // Handle OTP send action
+    console.log('OTP Sent to:', formData.email);
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
@@ -154,18 +159,26 @@ const RegistrationForm: React.FC = () => {
           />
           {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
         </div>
-
         <div className="mb-4">
           <label htmlFor="otp" className="block text-sm font-medium text-gray-700">Enter OTP</label>
-          <input
-            type="text"
-            id="otp"
-            name="otp"
-            value={formData.otp}
-            onChange={handleChange}
-            placeholder="123456"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          />
+          <div className="flex space-x-2">
+            <input
+              type="text"
+              id="otp"
+              name="otp"
+              value={formData.otp}
+              onChange={handleChange}
+              placeholder="123456"
+              className="mt-1 block w-1/2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            />
+            <button
+              type="button"
+              onClick={handleSendOTP}
+              className="mt-1 px-3 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Send OTP
+            </button>
+          </div>
           {errors.otp && <p className="text-red-500 text-sm">{errors.otp}</p>}
         </div>
 

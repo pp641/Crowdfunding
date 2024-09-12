@@ -1,7 +1,11 @@
 const redis = require('redis');
 
 const redisClient = redis.createClient({
-  url: 'redis://localhost:6379', 
+  url: `redis://${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || 6379}`
+});
+
+redisClient.connect().catch(err => {
+  console.error('Redis connection error:', err);
 });
 
 redisClient.on('connect', () => {
@@ -9,9 +13,7 @@ redisClient.on('connect', () => {
 });
 
 redisClient.on('error', (err) => {
-  console.log('Redis error:', err);
+  console.error('Redis error:', err);
 });
-
-redisClient.connect(); 
 
 module.exports = redisClient;

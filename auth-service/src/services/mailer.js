@@ -45,3 +45,5 @@ exports.generateAndSendOtp = async (email) => {
     return 'Email verified successfully';
   };
   
+
+  
