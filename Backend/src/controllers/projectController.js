@@ -3,6 +3,7 @@ const Project = require('../models/projectModel');
 async function createProject(req, res) {
   try {
     const project = new Project(req.body);
+    console.log("Data", req.body)
     project.creator = req.user["userId"]
     const savedProject = await project.save();
     res.status(201).json(savedProject);

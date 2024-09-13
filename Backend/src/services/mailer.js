@@ -25,6 +25,7 @@ const sendEmail = async (to, subject, text) => {
 
 
 exports.generateAndSendOtp = async (email) => {
+  console.log("ok", process.env.EMAIL_USER ,  process.env.EMAIL_PASSWORD)
     const otp = Math.round(Math.random(0,1)*1000000).toString();
     await redisClient.setEx(`otp:${email}`, 15 * 60, otp);
     const subject = 'Your OTP Code';

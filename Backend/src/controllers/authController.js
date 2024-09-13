@@ -6,7 +6,8 @@ const { generateToken } = require("../services/jwtService");
 const  runProducer  = require("../kafka/producer").runProducer;
 
 exports.register = async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { firstName, lastName, email, password } = req.body.data;
+  console.log("data", req.body)
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -28,7 +29,7 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body.data; 
   try {
     const user = await User.findOne({ email });
     if (!user) {
@@ -41,7 +42,6 @@ exports.login = async (req, res) => {
     }
 
     const token = generateToken(user);
-    await runProducer(token);
     res.json({token});
   } catch (error) {
     res.status(500).json({ message: error.inspect });
@@ -52,6 +52,7 @@ exports.login = async (req, res) => {
 exports.sendOtp =  async (req, res) => {
     const { email } = req.body;
     try {
+      console.log("body", req.body)
       await sendEmail.generateAndSendOtp(email);
       res.status(200).send('OTP sent to email');
     } catch (error) {
@@ -63,6 +64,7 @@ exports.sendOtp =  async (req, res) => {
   exports.verifyOtp =  async (req, res) => {
     const { email, otp } = req.body;
     try {
+      console.log("body", req.body)
       const message = await sendEmail.verifyOtp(email, otp);
       res.status(200).send(message);
     } catch (error) {
