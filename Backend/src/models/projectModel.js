@@ -4,7 +4,7 @@ const projectSchema = new mongoose.Schema({
 
   creator : {
     type : mongoose.Schema.ObjectId,
-    ref : 'user',
+    ref : 'User',
     required: true
   },
   title: {
