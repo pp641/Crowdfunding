@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { createContext, useState } from 'react';
+import { useUser } from './Context/userContext';
 
 const LoginPage: React.FC = () => {
+
+  const { setToken } = useUser(); 
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -18,8 +22,6 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // Basic validation
     let hasError = false;
     const newErrors = { ...errors };
 
@@ -40,8 +42,18 @@ const LoginPage: React.FC = () => {
     setErrors(newErrors);
 
     if (!hasError) {
-      // Handle successful form submission (e.g., send data to API)
       console.log('Form submitted:', formData);
+      axios.post('http://localhost:5001/login',{
+        data : formData
+      }).then((response)=>{
+            console.log("response", response);
+            const token = response.data.token;
+            localStorage.setItem('token', token);
+            setToken(token)
+            window.location.href = '/projects'
+      }).catch((error)=>{
+        console.log("Error", error);
+      })
     }
   };
 

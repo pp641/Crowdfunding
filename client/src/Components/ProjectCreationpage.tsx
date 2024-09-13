@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState , useContext} from 'react';
+import axios from 'axios';
+import { useUser } from './Context/userContext';
 
 const ProjectCreationPage: React.FC = () => {
+  const { token} = useUser();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -33,10 +36,8 @@ const ProjectCreationPage: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // Basic validation
     let hasError = false;
     const newErrors = { ...errors };
 
@@ -78,8 +79,22 @@ const ProjectCreationPage: React.FC = () => {
     setErrors(newErrors);
 
     if (!hasError) {
-      // Handle form submission (e.g., send data to API)
-      console.log('Project submitted:', formData);
+      try {
+       
+       await axios.post('http://localhost:5001/project/new', formData, {
+          headers: {
+            'Content-Type': 'Application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        }).then((response)=>{
+            console.log("created", response.data);
+            window.location.href = "/projects"
+        }).catch((error)=>{
+          console.log("Error", error);
+        })
+      } catch (error) {
+        console.error('Error submitting project:', error);
+      }
     }
   };
 
@@ -201,15 +216,14 @@ const ProjectCreationPage: React.FC = () => {
           <button
             type="button"
             className="px-4 py-2 bg-gray-300 text-white font-semibold rounded-md shadow-sm hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-            onClick={() => console.log('Save as draft')}
           >
-            Save as Draft
+            Cancel
           </button>
           <button
             type="submit"
             className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
-            Submit for Review
+            Submit
           </button>
         </div>
       </form>

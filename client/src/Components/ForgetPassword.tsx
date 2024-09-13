@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const ForgotPasswordPage: React.FC = () => {
-  const [step, setStep] = useState(1); // 1: Request OTP, 2: Enter OTP, 3: Reset Password
+  const [step, setStep] = useState(1); 
   const [formData, setFormData] = useState({
     email: '',
     otp: '',

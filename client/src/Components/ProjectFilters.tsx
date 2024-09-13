@@ -42,7 +42,6 @@ const ProjectFilters: React.FC<FilterProps> = ({ onFilterChange }) => {
             }}
           >
             <option value="">All Authors</option>
-            {/* Add more options dynamically based on your data */}
             <option value="Alice">Alice</option>
             <option value="Bob">Bob</option>
           </select>
@@ -91,7 +90,6 @@ const ProjectFilters: React.FC<FilterProps> = ({ onFilterChange }) => {
             <option value="">All Categories</option>
             <option value="Technology">Technology</option>
             <option value="Art">Art</option>
-            {/* Add more categories dynamically based on your data */}
           </select>
         </div>
 

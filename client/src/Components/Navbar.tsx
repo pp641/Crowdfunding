@@ -1,16 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from './AuthContext'; // Ensure the correct path to AuthContext
+import { useUser } from './Context/userContext';
 
 const Navbar: React.FC = () => {
-  const { isAuthenticated, logout } = useAuth();
-
+  const { token } = useUser();
   return (
     <nav className="bg-gray-800 shadow-md p-4 flex justify-between items-center">
       <div>
         <Link to="/" className="text-xl font-bold text-blue-600">CrowdFundr</Link>
       </div>
-    {isAuthenticated ?
+    {token !== null ?
     
     <div className="hidden md:flex space-x-4 items-center">
       <Link to="/" className="text-white hover:text-blue-600">Home</Link>
@@ -25,7 +24,6 @@ const Navbar: React.FC = () => {
   </div>
     
     }  
-
 
       <div className="flex items-center space-x-6">
         <div className="relative">
@@ -46,10 +44,10 @@ const Navbar: React.FC = () => {
               className="w-8 h-8 rounded-full"
             />
           </button>
-          <div className={`absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10 ${isAuthenticated ? 'block' : 'hidden'}`}>
+          <div className={`absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10 hidden `}>
             <Link to="/profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</Link>
             <Link to="/settings" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</Link>
-            <button onClick={logout} className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100">Logout</button>
+            <button  className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100">Logout</button>
           </div>
         </div>
       </div>

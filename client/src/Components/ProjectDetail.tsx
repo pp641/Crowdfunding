@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Project } from '../types/types'; // Adjust the import based on your file structure
+import { Project } from '../types/types'; 
 
 const ProjectDetail: React.FC = () => {
   const { project_id } = useParams<{ project_id: string }>();
   const [project, setProject] = useState<Project | null>(null);
 
   useEffect(() => {
-    // Fetch project details from API (mocked here)
     const fetchProject = async () => {
-      // Replace this with actual API call
       const response: Project = {
-        id: project_id!,
+        _id: project_id!,
         creatorName: 'Alice',
         title: 'Tech Innovation',
         description: 'An innovative tech project aiming to revolutionize the industry.',

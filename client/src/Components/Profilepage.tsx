@@ -10,7 +10,6 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className="flex">
-      {/* Profile Main Section */}
       <div className={`flex-1 p-6 ${isSettingsOpen ? 'mr-64' : ''}`}>
         <header className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-semibold">User Profile</h1>
@@ -22,7 +21,6 @@ const ProfilePage: React.FC = () => {
           </button>
         </header>
         <div className="flex flex-col md:flex-row gap-6">
-          {/* Profile Info */}
           <div className="flex-1 bg-white shadow-md rounded-lg p-6">
             <div className="flex items-center mb-6">
               <img
@@ -53,7 +51,6 @@ const ProfilePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Settings Pane */}
       {isSettingsOpen && (
         <aside className="w-64 bg-gray-100 p-6 shadow-md fixed top-0 right-0 h-full">
           <h2 className="text-2xl font-semibold mb-4">Settings</h2>

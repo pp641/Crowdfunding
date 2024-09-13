@@ -1,5 +1,5 @@
 export interface Project {
-    id: string;
+    _id: string;
     creatorName: string;
     title: string;
     description: string;
