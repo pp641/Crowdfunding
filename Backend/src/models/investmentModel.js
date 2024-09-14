@@ -15,7 +15,6 @@ const investmentSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',  
       required: true,
-
   },
   investedDate: {
     type: Date,

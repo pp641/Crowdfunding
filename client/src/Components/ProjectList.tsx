@@ -29,7 +29,7 @@ const ProjectList: React.FC = () => {
     };
 
     fetchProjects();
-  }, [token]);
+  }, []);
 
   const handleFilterChange = (filters: {
     author: string;
@@ -41,7 +41,7 @@ const ProjectList: React.FC = () => {
     const { author, deadline, status, category, search } = filters;
 
     const filtered = projects.filter(project => {
-      const matchesAuthor = author ? project.creatorName === author : true;
+      const matchesAuthor = author ? project.creator.firstName : true;
       const matchesDeadline = deadline ? new Date(project.deadline) <= new Date(deadline) : true;
       const matchesStatus = status ? 
         (status === 'funded' && project.fundedAmount >= project.targetAmount) ||
@@ -81,7 +81,7 @@ const ProjectList: React.FC = () => {
             return (
               <div key={project._id} className="bg-white shadow-md rounded-lg p-4">
                 <h3 className="text-xl font-semibold">{project.title}</h3>
-                <p className="text-gray-700">Creator: {project.creatorName}</p>
+                <p className="text-gray-700">Creator: {project.creator?.firstName + ' ' + project.creator?.lastName}</p>
                 <p className="text-gray-700">Deadline: {project.deadline}</p>
                 <p className="text-gray-700">Target Amount: ${project.targetAmount.toLocaleString()}</p>
                 <p className="text-gray-700 mb-2">Funded Amount: ${project.fundedAmount.toLocaleString()}</p>

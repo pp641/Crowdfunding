@@ -1,6 +1,6 @@
 export interface Project {
     _id: string;
-    creatorName: string;
+    creator: any;
     title: string;
     description: string;
     category: string;

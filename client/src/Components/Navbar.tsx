@@ -1,9 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useUser } from './Context/userContext';
 
 const Navbar: React.FC = () => {
   const { token } = useUser();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  }
+
+
+  const closeDropdown = () => {
+    setIsDropdownOpen(false);
+  };
+
+  const logout = () =>{ 
+    localStorage.removeItem('token');
+    window.location.href = "/login"
+  }
+
+  document.addEventListener('click', (e : MouseEvent)  => {
+    const target  = e.target as HTMLElement;
+    if ( target && !target.closest('.dropdown-button') && !target.closest('.dropdown-menu')) {
+      closeDropdown();
+    }
+  });
+
   return (
     <nav className="bg-gray-800 shadow-md p-4 flex justify-between items-center">
       <div>
@@ -15,7 +37,7 @@ const Navbar: React.FC = () => {
       <Link to="/" className="text-white hover:text-blue-600">Home</Link>
       <Link to="/projects" className="text-white hover:text-blue-600">Projects</Link>
       <Link to="/project-creation" className="text-white hover:text-blue-600">Create Project</Link>
-      <Link to="/help" className="text-white hover:text-blue-600">Help</Link>
+      <Link to="/help" className="text-white hover:text-blue-600">Users</Link>
   </div>
     :
     <div className="flex items-center space-x-4">
@@ -26,30 +48,26 @@ const Navbar: React.FC = () => {
     }  
 
       <div className="flex items-center space-x-6">
-        <div className="relative">
-          <button className="text-gray-600 hover:text-blue-600">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M10 2a6 6 0 00-6 6v3.586l-.293.293a1 1 0 001.414 1.414l1-1A1 1 0 006 12V8a4 4 0 118 0v4a1 1 0 00.293.707l1 1a1 1 0 001.414-1.414L16 11.586V8a6 6 0 00-6-6z" />
-              <path d="M10 18a2 2 0 002-2H8a2 2 0 002 2z" />
-            </svg>
-          </button>
-          <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">3</span>
-        </div>
 
-        <div className="relative">
-          <button className="flex items-center text-gray-600 hover:text-blue-600">
-            <img
-              src="https://via.placeholder.com/32"
-              alt="Profile"
-              className="w-8 h-8 rounded-full"
-            />
-          </button>
-          <div className={`absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10 hidden `}>
-            <Link to="/profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</Link>
-            <Link to="/settings" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</Link>
-            <button  className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100">Logout</button>
-          </div>
+      <div className="relative">
+      <button 
+        className="flex items-center text-gray-600 hover:text-blue-600 dropdown-button"
+        onClick={toggleDropdown}
+      >
+        <img
+          src="https://via.placeholder.com/32"
+          alt="Profile"
+          className="w-8 h-8 rounded-full"
+        />
+      </button>
+      {isDropdownOpen && (
+        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10 dropdown-menu">
+          <Link to="/profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</Link>
+          <Link to="/settings" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</Link>
+          <button onClick={logout} className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100">Logout</button>
         </div>
+      )}
+    </div>
       </div>
     </nav>
   );
