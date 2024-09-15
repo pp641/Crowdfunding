@@ -23,7 +23,6 @@ const ForgotPasswordPage: React.FC = () => {
 
   const handleRequestOTP = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Basic validation
     let hasError = false;
     const newErrors = { ...errors };
 
@@ -37,9 +36,9 @@ const ForgotPasswordPage: React.FC = () => {
     setErrors(newErrors);
 
     if (!hasError) {
-      // Handle OTP request (e.g., send OTP to email)
+      
       console.log('Request OTP for:', formData.email);
-      setStep(2); // Move to OTP entry step
+      setStep(2); 
     }
   };
 

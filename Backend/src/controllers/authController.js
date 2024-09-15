@@ -1,9 +1,7 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/authModel");
-const {Kafka}  = require('kafkajs')
 const sendEmail = require('../services/mailer');
 const { generateToken } = require("../services/jwtService");
-const  runProducer  = require("../kafka/producer").runProducer;
 
 exports.register = async (req, res) => {
   const { firstName, lastName, email, password } = req.body.data;
@@ -42,7 +40,7 @@ exports.login = async (req, res) => {
     }
 
     const token = generateToken(user);
-    res.json({token});
+    res.json({ token : token , id : user._id , email  : user.email });
   } catch (error) {
     res.status(500).json({ message: error.inspect });
   }
@@ -64,7 +62,6 @@ exports.sendOtp =  async (req, res) => {
   exports.verifyOtp =  async (req, res) => {
     const { email, otp } = req.body;
     try {
-      console.log("body", req.body)
       const message = await sendEmail.verifyOtp(email, otp);
       res.status(200).send(message);
     } catch (error) {
@@ -73,4 +70,45 @@ exports.sendOtp =  async (req, res) => {
   }
 
 
-
+  exports.getAllUsers = async (req, res) => {
+    try {
+      const usersList = await User.aggregate([
+        {
+          $lookup: {
+            from: 'projects', 
+            localField: '_id',
+            foreignField: 'creator', 
+            as: 'createdProjects',
+          }
+        },
+        {
+          $lookup: {
+            from: 'investments', 
+            localField: '_id',
+            foreignField: 'investor', 
+            as: 'investments',
+          }
+        },
+        {
+          $addFields: {
+            projectsCreatedCount: { $size: '$createdProjects' },
+            investmentsCount: { $size: '$investments' }
+          }
+        },
+        {
+          $project: {
+            name: 1,
+            email: 1,
+            projectsCreatedCount: 1,
+            investmentsCount: 1
+          }
+        }
+      ]);
+  
+      res.json({ users: usersList });
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      res.status(500).json({ message: 'Error fetching users', error });
+    }
+  };
+  

@@ -46,9 +46,13 @@ const LoginPage: React.FC = () => {
       axios.post('http://localhost:5001/login',{
         data : formData
       }).then((response)=>{
-            console.log("response", response);
+            console.log("response", response.data);
             const token = response.data.token;
+            const userId = response.data.id;
+            const email = response.data.email;
             localStorage.setItem('token', token);
+            localStorage.setItem('userId', userId );
+            localStorage.setItem('email', email );
             setToken(token)
             window.location.href = '/projects'
       }).catch((error)=>{

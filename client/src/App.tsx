@@ -11,6 +11,7 @@ import Navbar from './Components/Navbar';
 import Footer from './Components/Footer';
 import Chatbox from './Components/ChatBox';
 import ProtectedRoute from './Components/ProtectedRoute'; // Import the ProtectedRoute component
+import UsersList from './Components/AllUsers';
 
 const App: React.FC = () => {
   return (
@@ -26,6 +27,7 @@ const App: React.FC = () => {
         <Route path="/projects" element={<ProtectedRoute element={<ProjectList />} />} />
         <Route path="/profile" element={<ProtectedRoute element={<ProfilePage />} />} />
         <Route path="/message" element={<ProtectedRoute element={<Chatbox />} />} />
+        <Route path="/users" element={<ProtectedRoute element={<UsersList />} />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <Footer />

@@ -4,9 +4,10 @@ import axios from 'axios';
 import { Project } from '../types/types';
 import { useUser } from './Context/userContext';
 import CommentsSection from './Comments';
+import Investment from './InvestMentComponent'; // Import the Investment component
 
 const ProjectDetail: React.FC = () => {
-  const {token} = useUser();
+  const { token } = useUser();
   const { project_id } = useParams<{ project_id: string }>();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -17,8 +18,8 @@ const ProjectDetail: React.FC = () => {
       try {
         const response = await axios.get(`http://localhost:5001/project/${project_id}`, {
           headers: {
-            'Authorization' : `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         setProject(response.data);
       } catch (err) {
@@ -31,6 +32,12 @@ const ProjectDetail: React.FC = () => {
 
     fetchProject();
   }, [project_id]);
+
+  const handleInvestmentSuccess = (newFundedAmount: number) => {
+    if (project) {
+      setProject((prevProject) => prevProject ? { ...prevProject, fundedAmount: newFundedAmount } : null);
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -83,10 +90,18 @@ const ProjectDetail: React.FC = () => {
               </div>
             )}
           </div>
+
+          {/* Investment Component */}
+          <Investment
+            projectId={project._id}
+            fundedAmount={project.fundedAmount}
+            onInvestmentSuccess={handleInvestmentSuccess}
+          />
         </>
       ) : (
         <p>Project not found</p>
       )}
+
       <CommentsSection projectId={project_id} />
     </div>
   );
