@@ -28,31 +28,15 @@ const userSchema = new mongoose.Schema({
   passwordHash: {
     type: String,
     required: [true, 'Password is required'],
-    minlength: [8, 'Password must be at least 8 characters long'],
   },
   role: {
     type: String,
     enum: ['user', 'admin'],
     default: 'user',
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
+  }
+},{
+  timestamps : true
 });
 
-userSchema.pre('save', async function (next) {
-    try {
-      this.updatedAt = Date.now();
-      next();
-    } catch (error) {
-        console.error("Error", error);
-        next(error);
-    }
-  });
 
 module.exports = mongoose.model('User', userSchema);

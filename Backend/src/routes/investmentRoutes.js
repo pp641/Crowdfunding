@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const investmentController = require('../controllers/investmentController');
 
-router.post('/investment/new', investmentController.createInvestment);
+router.post('/investment', investmentController.createInvestment);
 
 router.get('/investments', investmentController.getInvestments);
 

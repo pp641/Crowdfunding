@@ -3,32 +3,31 @@ const Project = require('../models/projectModel');
 
 exports.createInvestment = async (req, res) => {
   try {
-    const { investmentAmount, projectId, investor } = req.body;
+    const { amount, projectId, userId } = req.body;
+    console.log("amounthere", req.body)
+
+
 
     const project = await Project.findById(projectId);
     if (!project) {
       return res.status(404).json({ message: 'Project not found' });
     }
-
     const newInvestment = new Investment({
-      investmentAmount,
+      investmentAmount : amount,
       project: projectId,
-      investor: {
-        userId: investor.userId,
-        firstName: investor.firstName,
-        lastName: investor.lastName,
-        email: investor.email
-      },
+      investor: userId
     });
-
-    const savedInvestment = await newInvestment.save();
-    res.status(201).json(savedInvestment);
+    console.log("okod" , project.fundedAmount , amount)
+    project.fundedAmount = project.fundedAmount + amount;
+    await project.save();
+    await newInvestment.save();
+    res.status(201).json(newInvestment);
   } catch (error) {
+    console.log("Error in investment", error);
     res.status(500).json({ message: 'Error creating investment', error });
   }
 };
 
-// Get all investments
 exports.getInvestments = async (req, res) => {
   try {
     const investments = await Investment.find().populate('project investor.userId');

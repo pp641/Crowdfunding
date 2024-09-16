@@ -5,11 +5,12 @@ import { useUser } from './Context/userContext';
 interface InvestmentProps {
   projectId: string;
   fundedAmount: number;
-  onInvestmentSuccess: (newFundedAmount: number) => void; // Callback to update funded amount on success
+  onInvestmentSuccess: (newFundedAmount: number) => void; 
 }
 
 const Investment: React.FC<InvestmentProps> = ({ projectId, fundedAmount, onInvestmentSuccess }) => {
   const { token } = useUser();
+  const userId = localStorage.getItem('userId');
   const [investmentAmount, setInvestmentAmount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,16 +28,10 @@ const Investment: React.FC<InvestmentProps> = ({ projectId, fundedAmount, onInve
 
     try {
       const response = await axios.post(
-        `http://localhost:5001/project/${projectId}/invest`,
-        { amount: investmentAmount },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        `http://localhost:5001/investment`,
+        { amount: investmentAmount , projectId : projectId , userId : userId }
       );
 
-      // Update funded amount on success
       const newFundedAmount = response.data.newFundedAmount;
       onInvestmentSuccess(newFundedAmount);
       setSuccess('Investment successful!');

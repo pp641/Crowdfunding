@@ -4,6 +4,7 @@ import { useUser } from './Context/userContext';
 
 const Navbar: React.FC = () => {
   const { token } = useUser();
+  const userId =  localStorage.getItem('userId');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);

@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
+import axios from "axios";
+import React, { useState } from "react";
 
 const ForgotPasswordPage: React.FC = () => {
-  const [step, setStep] = useState(1); 
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    email: '',
-    otp: '',
-    newPassword: '',
-    confirmNewPassword: '',
+    email: "",
+    otp: "",
+    newPassword: "",
+    confirmNewPassword: "",
   });
 
   const [errors, setErrors] = useState({
-    email: '',
-    otp: '',
-    newPassword: '',
-    confirmNewPassword: '',
+    email: "",
+    otp: "",
+    newPassword: "",
+    confirmNewPassword: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,69 +28,100 @@ const ForgotPasswordPage: React.FC = () => {
     const newErrors = { ...errors };
 
     if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'A valid email is required';
+      newErrors.email = "A valid email is required";
       hasError = true;
     } else {
-      newErrors.email = '';
+      newErrors.email = "";
     }
 
     setErrors(newErrors);
 
     if (!hasError) {
-      
-      console.log('Request OTP for:', formData.email);
-      setStep(2); 
+      axios
+        .post("http://localhost:5001/send-otp", {
+          email: formData.email,
+        })
+        .then((data) => {
+          console.log("Data", data.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      setStep(2);
     }
   };
 
-  const handleVerifyOTP = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Basic validation
-    let hasError = false;
-    const newErrors = { ...errors };
-
-    if (!formData.otp) {
-      newErrors.otp = 'OTP is required';
-      hasError = true;
-    } else {
-      newErrors.otp = '';
-    }
-
-    setErrors(newErrors);
-
-    if (!hasError) {
-      // Handle OTP verification (e.g., verify OTP)
-      console.log('Verify OTP:', formData.otp);
-      setStep(3); // Move to password reset step
+  const handleVerifyOTP = async (e: React.FormEvent<HTMLFormElement>) => {
+    try {
+      e.preventDefault();
+      let hasError = false;
+      const newErrors = { ...errors };
+      await axios
+        .post("http://localhost:5001/verify-otp", {
+          email: formData.email,
+          otp: formData.otp,
+        })
+        .then((data) => {
+          console.log("Data12", data.data);
+        })
+        .catch((error) => {
+          console.log("Error23", error.response.data);
+          newErrors.otp = error.response.data;
+          hasError = true;
+        });
+      if (!formData.otp) {
+        newErrors.otp = "OTP is required";
+        hasError = true;
+      }
+      console.log("Error", newErrors);
+      if (!hasError) {
+        setStep(3);
+      } else {
+        setErrors(newErrors);
+      }
+    } catch (error) {
+      console.log("Error", error);
     }
   };
 
-  const handleResetPassword = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Basic validation
     let hasError = false;
     const newErrors = { ...errors };
-
     if (!formData.newPassword || formData.newPassword.length < 6) {
-      newErrors.newPassword = 'New password must be at least 6 characters long';
+      newErrors.newPassword = "New password must be at least 6 characters long";
       hasError = true;
     } else {
-      newErrors.newPassword = '';
+      newErrors.newPassword = "";
     }
-
     if (formData.newPassword !== formData.confirmNewPassword) {
-      newErrors.confirmNewPassword = 'Passwords do not match';
+      newErrors.confirmNewPassword = "Passwords do not match";
       hasError = true;
     } else {
-      newErrors.confirmNewPassword = '';
+      newErrors.confirmNewPassword = "";
     }
-
+if(newErrors.confirmNewPassword === ""){
+    await axios
+    .put("http://localhost:5001/update-password", {
+      email: formData.email,
+      newPassword : formData.newPassword,
+    })
+    .then((data) => {
+      console.log("Data12", data.data);
+    })
+    .catch((error) => {
+      console.log("Error23", error.response.data);
+      newErrors.confirmNewPassword = error.response.data;
+      hasError = true;
+    });
+  }
     setErrors(newErrors);
-
     if (!hasError) {
-      // Handle password reset (e.g., update password)
-      console.log('Reset password to:', formData.newPassword);
+        alert('Password Updated Successfully');
+        window.location.href = "/login"
     }
+
+
   };
 
   return (
@@ -99,7 +131,12 @@ const ForgotPasswordPage: React.FC = () => {
       {step === 1 && (
         <form onSubmit={handleRequestOTP}>
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Email Address
+            </label>
             <input
               type="email"
               id="email"
@@ -109,7 +146,9 @@ const ForgotPasswordPage: React.FC = () => {
               placeholder="example@example.com"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email}</p>
+            )}
           </div>
 
           <div className="flex justify-center">
@@ -126,7 +165,12 @@ const ForgotPasswordPage: React.FC = () => {
       {step === 2 && (
         <form onSubmit={handleVerifyOTP}>
           <div className="mb-4">
-            <label htmlFor="otp" className="block text-sm font-medium text-gray-700">Enter OTP</label>
+            <label
+              htmlFor="otp"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Enter OTP
+            </label>
             <input
               type="text"
               id="otp"
@@ -153,7 +197,12 @@ const ForgotPasswordPage: React.FC = () => {
       {step === 3 && (
         <form onSubmit={handleResetPassword}>
           <div className="mb-4">
-            <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">New Password</label>
+            <label
+              htmlFor="newPassword"
+              className="block text-sm font-medium text-gray-700"
+            >
+              New Password
+            </label>
             <input
               type="password"
               id="newPassword"
@@ -163,11 +212,18 @@ const ForgotPasswordPage: React.FC = () => {
               placeholder="********"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
-            {errors.newPassword && <p className="text-red-500 text-sm">{errors.newPassword}</p>}
+            {errors.newPassword && (
+              <p className="text-red-500 text-sm">{errors.newPassword}</p>
+            )}
           </div>
 
           <div className="mb-4">
-            <label htmlFor="confirmNewPassword" className="block text-sm font-medium text-gray-700">Confirm New Password</label>
+            <label
+              htmlFor="confirmNewPassword"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Confirm New Password
+            </label>
             <input
               type="password"
               id="confirmNewPassword"
@@ -177,7 +233,11 @@ const ForgotPasswordPage: React.FC = () => {
               placeholder="********"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
-            {errors.confirmNewPassword && <p className="text-red-500 text-sm">{errors.confirmNewPassword}</p>}
+            {errors.confirmNewPassword && (
+              <p className="text-red-500 text-sm">
+                {errors.confirmNewPassword}
+              </p>
+            )}
           </div>
 
           <div className="flex justify-center">
